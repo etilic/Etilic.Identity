@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace Etilic.Identity.OAuth
         /// <summary>
         /// Gets or sets the globally unique ID of the OAuth service this token is for.
         /// </summary>
+        [Required]
         public Guid ServiceID
         {
             get;
@@ -31,6 +33,7 @@ namespace Etilic.Identity.OAuth
         /// <summary>
         /// Gets or sets the globally unique ID of the web identity this token belongs to.
         /// </summary>
+        [Required]
         public Guid IdentityID
         {
             get;
@@ -39,7 +42,37 @@ namespace Etilic.Identity.OAuth
         /// <summary>
         /// Gets or sets the token.
         /// </summary>
-        public String Token
+        [Required]
+        public String AccessToken
+        {
+            get;
+            set;
+        }
+
+        public String RefreshToken
+        {
+            get;
+            set;
+        }
+        [Required]
+        public DateTime Issued
+        {
+            get;
+            set;
+        }
+        [Required]
+        public DateTime Expires
+        {
+            get;
+            set;
+        }
+        public String Scope
+        {
+            get;
+            set;
+        }
+
+        public String TokenType
         {
             get;
             set;
@@ -56,5 +89,16 @@ namespace Etilic.Identity.OAuth
             set;
         }
         #endregion
+
+        public OAuthToken()
+        {
+            this.ID = Guid.NewGuid();
+        }
+
+        public OAuthToken(Guid serviceID)
+            : this()
+        {
+            this.ServiceID = serviceID;
+        }
     }
 }

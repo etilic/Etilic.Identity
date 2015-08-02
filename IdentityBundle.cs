@@ -16,20 +16,25 @@ namespace Etilic.Identity
     {
         #region Constants
         /// <summary>
-        /// 
+        /// The globally unique ID of this bundle.
         /// </summary>
-        public const String ID = "D79AA2D6-C44F-43F2-8A82-708DB665379A";
+        public const String GUID = "D79AA2D6-C44F-43F2-8A82-708DB665379A";
+        #endregion
+
+        #region Static members
+        /// <summary>
+        /// The globally unique ID of this bundle.
+        /// </summary>
+        public static Guid ID = new Guid(GUID);
         #endregion
 
         #region Instance members
         /// <summary>
-        /// The globally unique ID of this bundle.
-        /// </summary>
-        private Guid bundleID = new Guid(ID);
-        /// <summary>
         /// A value indicating whether OAuth identity extensions are enabled.
         /// </summary>
         private Boolean oauthEnabled = true;
+
+        private Dictionary<Guid, IOAuthFlow> oauthFlows;
         #endregion
 
         #region Properties
@@ -38,7 +43,7 @@ namespace Etilic.Identity
         /// </summary>
         public override Guid BundleID
         {
-            get { return this.bundleID; }
+            get { return ID; }
         }
         /// <summary>
         /// Gets or sets a value indicating whether OAuth identity extensions are enabled.
@@ -47,6 +52,20 @@ namespace Etilic.Identity
         {
             get { return this.oauthEnabled; }
             set { this.oauthEnabled = value;  }
+        }
+        /// <summary>
+        /// Gets the read-only dictionary containing all registered OAuth authentication flows.
+        /// </summary>
+        public IReadOnlyDictionary<Guid, IOAuthFlow> OAuthFlows
+        {
+            get { return this.oauthFlows;  }
+        }
+        #endregion
+
+        #region Constructors
+        public IdentityBundle()
+        {
+            this.oauthFlows = new Dictionary<Guid, IOAuthFlow>();
         }
         #endregion
 
@@ -65,6 +84,17 @@ namespace Etilic.Identity
                 modelBuilder.Entity<OAuthCallback>();
                 modelBuilder.Entity<OAuthToken>();
             }
+        }
+        #endregion
+
+        #region RegisterOAuthFlow
+        /// <summary>
+        /// Registers an OAuth authentication flow for the specified service.
+        /// </summary>
+        /// <param name="flow">The implementation of the OAuth flow.</param>
+        public void RegisterOAuthFlow(IOAuthFlow flow)
+        {
+            this.oauthFlows.Add(flow.ServiceID, flow);
         }
         #endregion
     }
